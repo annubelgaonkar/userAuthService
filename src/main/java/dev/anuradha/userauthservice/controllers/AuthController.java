@@ -5,17 +5,15 @@ import dev.anuradha.userauthservice.dtos.AuthResponseDTO;
 import dev.anuradha.userauthservice.dtos.LoginRequestDTO;
 import dev.anuradha.userauthservice.models.User;
 import dev.anuradha.userauthservice.services.AuthService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class AuthController {
 
     private AuthService authService;
-
-    public AuthController(AuthService authService){
-        this.authService = authService;
-    }
 
     @PostMapping("/register")
     public AuthResponseDTO register(@RequestBody AuthRequestDTO authRequestDTO){

@@ -7,16 +7,21 @@ import dev.anuradha.userauthservice.exceptions.UserNotRegisteredException;
 import dev.anuradha.userauthservice.models.State;
 import dev.anuradha.userauthservice.models.User;
 import dev.anuradha.userauthservice.repositories.UserRepo;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AuthService {
 
-    @Autowired
     private UserRepo userRepo;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User register(String name, String email, String password){
 
@@ -28,7 +33,7 @@ public class AuthService {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-        user.setPassword(password);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
 
         return userRepo.save(user);
 
@@ -47,9 +52,11 @@ public class AuthService {
         }
 
         String storedPassword = userOptional.get().getPassword();
-        if(!storedPassword.equals(password)){
-            throw new PasswordMismatchException("Entered password is incorrect");
-        }
+     //   if(!storedPassword.equals(password)){
+
+            if(!bCryptPasswordEncoder.matches(password, storedPassword)){
+                throw new PasswordMismatchException("Entered password is incorrect");
+            }
 
         return userOptional.get();
     }
