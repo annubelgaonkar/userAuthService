@@ -22,7 +22,7 @@ public class AuthService {
 
         Optional<User> userOptional = userRepo.findByEmail(email);
         if(userOptional.isPresent()){
-            throw new UserAlreadySignedException("Please try login directly");
+            throw new UserAlreadySignedException("User already registered,please try login directly");
         }
 
         User user = new User();

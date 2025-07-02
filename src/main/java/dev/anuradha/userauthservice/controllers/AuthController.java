@@ -5,32 +5,34 @@ import dev.anuradha.userauthservice.dtos.AuthResponseDTO;
 import dev.anuradha.userauthservice.dtos.LoginRequestDTO;
 import dev.anuradha.userauthservice.models.User;
 import dev.anuradha.userauthservice.services.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
     private AuthService authService;
+
+    public AuthController(AuthService authService){
+        this.authService = authService;
+    }
 
     @PostMapping("/register")
     public AuthResponseDTO register(@RequestBody AuthRequestDTO authRequestDTO){
 
-        User register = authService.register(authRequestDTO.getName(),
+        User registerUser = authService.register(authRequestDTO.getName(),
                     authRequestDTO.getEmail(),
                     authRequestDTO.getPassword());
 
-        return from(register);
+        return from(registerUser);
     }
 
     @PostMapping("/login")
     public AuthResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO){
+        User login = authService.login(loginRequestDTO.getEmail(),
+                loginRequestDTO.getPassword());
 
+        return from(login);
     }
 
     //conversion of user to AuthResponseDTO
@@ -42,4 +44,5 @@ public class AuthController {
 
         return authResponseDTO;
     }
+
 }
