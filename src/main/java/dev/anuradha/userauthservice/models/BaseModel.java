@@ -20,4 +20,6 @@ public abstract class BaseModel {
     private Date createdAt;
     private Date lastUpdatedAt;
     private State state;
+
+
 }
