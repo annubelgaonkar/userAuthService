@@ -1,5 +1,6 @@
 package dev.anuradha.userauthservice.services;
 
+import dev.anuradha.userauthservice.exceptions.AccountSuspendedException;
 import dev.anuradha.userauthservice.exceptions.PasswordMismatchException;
 import dev.anuradha.userauthservice.exceptions.UserAlreadySignedException;
 import dev.anuradha.userauthservice.exceptions.UserNotRegisteredException;
@@ -18,10 +19,12 @@ public class AuthService {
     private UserRepo userRepo;
 
     public User register(String name, String email, String password){
+
         Optional<User> userOptional = userRepo.findByEmail(email);
         if(userOptional.isPresent()){
             throw new UserAlreadySignedException("Please try login directly");
         }
+
         User user = new User();
         user.setName(name);
         user.setEmail(email);
@@ -39,7 +42,8 @@ public class AuthService {
         }
 
         if(!userOptional.get().getState().equals(State.ACTIVE)){
-
+            throw new AccountSuspendedException(
+                    "User account is temporarily suspended, please try after some days");
         }
 
         String storedPassword = userOptional.get().getPassword();
@@ -47,5 +51,6 @@ public class AuthService {
             throw new PasswordMismatchException("Entered password is incorrect");
         }
 
+        return userOptional.get();
     }
 }
